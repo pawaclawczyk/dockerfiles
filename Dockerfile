@@ -5,5 +5,6 @@ RUN docker-php-ext-install opcache intl mbstring
 
 COPY php.ini /usr/local/etc/php/php.ini
 
-CMD ["php", "-a"]
+RUN apt-get install -y git
 
+CMD ["php", "-a"]

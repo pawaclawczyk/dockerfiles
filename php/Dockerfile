@@ -1,10 +1,8 @@
 FROM php:7
 
-RUN apt-get update && apt-get install -y libicu-dev
-RUN docker-php-ext-install opcache intl mbstring
+RUN apt-get update && apt-get install -y libicu-dev zlib1g-dev
+RUN docker-php-ext-install opcache intl mbstring zip
 
 COPY php.ini /usr/local/etc/php/php.ini
-
-RUN apt-get install -y git
 
 CMD ["php", "-a"]

@@ -1,8 +1,9 @@
 FROM debian
 
-VOLUME /opt/java
-
-ENV JAVA_PACKAGE_VERSION 8u66
+ENV JAVA_MAJOR_VERSION 8
+ENV JAVA_UPDATE_VERSION 66
+ENV JAVA_PACKAGE_VERSION ${JAVA_MAJOR_VERSION}u${JAVA_UPDATE_VERSION}
+ENV JAVA_DIR jdk1.${JAVA_MAJOR_VERSION}.0_${JAVA_UPDATE_VERSION}
 
 WORKDIR /var/java
 
@@ -14,14 +15,12 @@ RUN wget \
     --no-check-certificate \
     --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" \
     "http://download.oracle.com/otn-pub/java/jdk/${JAVA_PACKAGE_VERSION}-b14/jdk-${JAVA_PACKAGE_VERSION}-linux-x64.tar.gz"
-RUN tar -zxf jdk-${JAVA_PACKAGE_VERSION}-linux-x64.tar.gz
-# RUN rm -rf /opt/java/*
-RUN chown -R root:root `ls -1 | grep -v gz`
-RUN cp -r `ls -1 | grep -v gz`/* /opt/java/
-RUN rm -rf `ls -1 | grep -v gz`
-RUN rm -rf jdk-${JAVA_PACKAGE_VERSION}-linux-x64.tar.gz
+RUN tar -zxf jdk-${JAVA_PACKAGE_VERSION}-linux-x64.tar.gz \
+    && chown -R root ${JAVA_DIR}
 
-ENV JAVA_HOME /opt/java
+VOLUME /opt/java
+
+ENV JAVA_HOME = /opt/java
 ENV PATH ${PATH}:/opt/java/bin
 
-CMD ["java", "-version"]
+CMD chown -R root ${JAVA_DIR} && mv ${JAVA_DIR}/* /opt/java/ && java -version && /bin/bash 
